@@ -1,0 +1,7 @@
+IMPORTANTE: Sua resposta deve ser apenas um número inteiro de 0 a 10, sem explicação, comentário ou texto extra.
+
+Analise o trecho abaixo do áudio e, em uma escala de 0 a 10, atribua uma nota para o potencial deste corte se tornar viral, ser interessante, ou engajar o público em redes sociais.
+
+Responda apenas com um número inteiro de 0 a 10. Não escreva nada além do número.
+
+Trecho: TRECHO_AQUI

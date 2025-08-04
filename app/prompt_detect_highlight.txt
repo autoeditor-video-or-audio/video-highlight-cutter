@@ -1,0 +1,28 @@
+Exemplo de resposta esperada:
+[
+  {"start": 123, "end": 137},
+  {"start": 141, "end": 157.4}
+]
+
+INSTRUÇÕES:
+Com base na transcrição abaixo, identifique trechos NATURAIS que possam ser assistidos separadamente, sempre buscando cortes que tenham início, meio e fim, e transmitam uma ideia, micro-história, emoção, piada, reação ou momento marcante.
+
+- Priorize cortes entre 7 e 40 segundos, mas aceite cortes mais longos (inclusive acima de 60 segundos) se o trecho fizer sentido completo apenas assim.
+- NÃO crie cortes curtos demais, nem cortes apenas para atingir um tempo mínimo ou máximo.
+- NÃO divida a conversa de forma artificial, nem gere cortes em sequência sem motivo. Apenas separe quando houver uma mudança clara de tema, emoção, reação ou conclusão de ideia.
+- Prefira menos cortes de qualidade do que muitos cortes artificiais.
+- Aceite cortes de qualquer pessoa do áudio, não apenas do dono do canal, desde que o corte faça sentido isoladamente, tenha emoção, contexto ou potencial de engajamento.
+- **EVITE cortes em trechos onde haja apenas barulho do jogo, sons frenéticos, silêncio, música de fundo ou falas irrelevantes. Só corte nesses casos se houver uma reação, meme, expressão ou momento que possa viralizar ou ser engraçado isoladamente.**
+- TODOS os cortes devem fazer sentido isoladamente, mesmo se forem parte de uma conversa maior.
+
+IMPORTANTE:
+- Não escreva nenhum texto, comentário, explicação, análise ou resumo fora do JSON!
+- A resposta deve começar IMEDIATAMENTE com [ e terminar com ].
+- Se não houver cortes, retorne apenas [].
+- Use segundos nos campos "start" e "end".
+
+DICAS:
+- Só faça cortes quando houver um contexto claro, finalização de ideia, emoção, piada ou momento marcante.
+- Cortes só com sons do jogo devem ser ignorados, a menos que seja um meme ou algo muito viralizável.
+
+Transcrição: TRANSCRIBE

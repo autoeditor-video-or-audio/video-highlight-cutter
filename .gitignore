@@ -1,0 +1,7 @@
+argocd/secret/
+__pycache__
+app/processed/*.json
+app/processed/*.mp4
+app/uploads/*.mp4
+app/uploads/*.mp3
+app/uploads/*.srt

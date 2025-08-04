@@ -1,0 +1,6 @@
+requests
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+moviepy==1.0.3

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Highlights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-900">
+    <div class="w-full px-2 sm:px-8 py-4">
+        <h1 class="text-4xl font-bold mb-4 text-center">Upload de Vídeo (.mp4)</h1>
+        <form id="uploadForm" class="flex flex-col sm:flex-row gap-2 items-start justify-center mb-4">
+            <input type="file" id="fileInput" name="file" accept=".mp4" required
+                class="block border border-gray-300 rounded px-2 py-1 text-gray-700">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">Enviar</button>
+        </form>
+        <div id="progressBar" class="w-full rounded bg-gray-200 h-6 mb-2" style="display:none;">
+            <div id="progressBarFill" class="bg-green-500 h-6 rounded text-center text-white font-medium" style="width: 0%;">0%</div>
+        </div>
+        <div id="uploadStatus" class="mb-4"></div>
+        <hr class="my-4">
+
+        <h2 class="text-2xl font-bold mb-3 text-center">Highlights Disponíveis</h2>
+        <!-- O grid agora tem um id para JS atualizar -->
+        <div id="highlightsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8 justify-items-center">
+            {% for f in highlights %}
+            <div class="bg-white rounded shadow p-3 flex flex-col items-center border w-full max-w-[560px]">
+                <a class="text-blue-700 font-semibold underline break-all mb-2 text-center text-xs" href="/download/{{ f.name }}" download>{{ f.name }}</a>
+                <video class="rounded w-full" style="max-width:540px" controls>
+                    <source src="/download/{{ f.name }}" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    <script src="/static/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+services:
+  video-highlight-cutter:
+    build: .
+    # Para uso igual ao --network=host (Atenção: só funciona no Linux nativo)
+    # network_mode: host
+    container_name: video-highlight-cutter
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"      
+    restart: always
+    tty: true                # Deixa o terminal interativo
+    stdin_open: true         # Permite interação tipo -ti
+    volumes:
+      - ./app:/app
+    networks:
+      - default      
+    working_dir: /app    # Entra direto na pasta do seu app
+    # command: bash            # Ao subir, já cai no bash, igual seu exemplo
+    depends_on:
+      - whisper
+      - ollama    
+
+  whisper:
+    image: onerahmet/openai-whisper-asr-webservice:v1.9.1 # GPU onerahmet/openai-whisper-asr-webservice:v1.9.1-gpu
+    container_name: whisper
+    restart: unless-stopped
+    environment:
+      - ASR_MODEL=turbo
+      - ASR_ENGINE=openai_whisper
+    ports:
+      - "9000:9000"
+    volumes:
+      - cache-whisper:/root/.cache
+    networks:
+      - default      
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    # runtime: nvidia
+
+  ollama:
+    image: ollama/ollama:0.10.1 # GPU ollama/ollama:rocm
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    environment:
+      - OLLAMA_MODELS=llama3.2:3b
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    # runtime: nvidia
+    networks:
+      - default
+
+networks:
+  default:
+    external: true
+    name: app-network
+
+volumes:
+  cache-whisper:
+  ollama:
+
+# docker network create app-network
+# docker compose up --build -d
