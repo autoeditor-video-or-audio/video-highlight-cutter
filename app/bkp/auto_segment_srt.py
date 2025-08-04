@@ -74,3 +74,4 @@ if __name__ == "__main__":
     with open(highlight_path, "w", encoding="utf-8") as f:
         json.dump(highlights, f, ensure_ascii=False, indent=2)
     print(f"{len(highlights)} cortes gerados e salvos em {highlight_path}")
+
