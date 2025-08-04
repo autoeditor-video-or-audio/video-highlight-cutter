@@ -12,6 +12,14 @@ Um webapp simples e prático para **upload de vídeos (.mp4)**, extração autom
 
 ---
 
+## 💻 Exemplo da interface
+
+Veja como é fácil acompanhar o processo:
+
+![Exemplo da interface Audio Highlight Cutter](assets/exemplo-frontend.jpg)
+
+---
+
 ## 🛠️ Principais Tecnologias
 
 - **Python FastAPI** (backend web)
