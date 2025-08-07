@@ -31,20 +31,10 @@ Veja como é fácil acompanhar o processo:
 
 ---
 
-## 👨‍💻 Como rodar localmente
+## 🐳 Como subir rapidamente (Recomendado - Docker)
 
-```bash
-# Instale as dependências Python
-pip install -r requirements.txt
-
-# Inicie o servidor web
-uvicorn webapp:app --reload --host 0.0.0.0 --port 8000
-
-# Abra o navegador em
-http://localhost:8000
-```
-
-## 🐳 Rodando via Docker
+A forma mais fácil e recomendada para rodar todo o sistema é via **Docker Compose**, pois já integra todos os serviços necessários (webapp, Whisper, Ollama).  
+Siga os passos:
 
 ```bash
 # 1. Crie a rede docker (apenas na primeira vez)
@@ -57,7 +47,30 @@ docker compose up --build -d
 http://localhost:8000
 ```
 
-> **Obs:** O processamento usa IA e pode demorar alguns minutos conforme o vídeo.
+> **Obs:** O processamento usa IA e pode demorar alguns minutos conforme o vídeo e seu hardware.
+
+---
+
+## 👨‍💻 Rodando manualmente (Desenvolvedores/Avançado)
+
+> ⚠️ **Atenção:** Para uso real, sempre prefira a versão Docker acima!  
+> Rodar localmente sem containers requer que você tenha o Whisper e o Ollama configurados separadamente.
+
+Para desenvolvedores que desejam rodar *apenas o webapp*:
+
+```bash
+# Instale as dependências Python
+pip install -r requirements.txt
+
+# Inicie o servidor web
+uvicorn webapp:app --reload --host 0.0.0.0 --port 8000
+
+# Abra o navegador em
+http://localhost:8000
+```
+
+> Isso sobe apenas a interface web.  
+> Para processamento real, os serviços de IA precisam estar rodando conforme no docker-compose!
 
 ---
 
@@ -87,6 +100,8 @@ python filter_highlights.py seu_video.highlight.classified.json seu_video.highli
 python cut_highlight.py seu_video.mp4 seu_video.highlight.filtered.json
 # Gera arquivos highlight: seu_video_highlight1.mp4, etc.
 ```
+
+---
 
 ## 🐳 docker-compose.yaml (resumido)
 
@@ -158,6 +173,8 @@ volumes:
   ollama:
 ```
 
+---
+
 ## 🐍 Dockerfile (resumido)
 
 ```dockerfile
@@ -173,6 +190,8 @@ EXPOSE 8000
 CMD ["uvicorn", "webapp:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
+---
+
 ## ℹ️ Observações
 
 - Os highlights aparecem automaticamente enquanto o processamento ocorre.
@@ -185,5 +204,3 @@ CMD ["uvicorn", "webapp:app", "--host", "0.0.0.0", "--port", "8000"]
 
 Achou algum bug, tem uma sugestão ou quer contribuir?  
 Abra uma issue ou PR!
-
----
