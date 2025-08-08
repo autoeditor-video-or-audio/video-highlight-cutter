@@ -1,124 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Video Highlights</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Orbitron', sans-serif;
-            background-color: #0A0A1A; /* Deep Space Navy */
-            color: #E0E7FF; /* Off-white for text */
+  <title>Video Highlights</title>
+
+  <!-- TwindCSS -->
+  <script type="module">
+    import { setup } from 'https://cdn.skypack.dev/twind/shim';
+    setup({
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Orbitron", "sans-serif"],
+            orbitron: ["Orbitron", "sans-serif"],
+          },
+          colors: {
+            navy: "#0A0A1A",
+            offwhite: "#E0E7FF",
+            blueglow: "#038EFC",
+            vibrantgreen: "#05C46B",
+            darkcontainer: "#1A1D2B",
+            darkborder: "#25283F"
+          }
         }
-        .container-glow {
-            border: 2px solid #25283F;
-            background-color: #1A1D2B; /* Darker container background */
-            box-shadow: 0 0 15px rgba(3, 142, 253, 0.2); /* Subtle blue glow */
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem; /* Aumentado o padding para mais espaço interno */
-        }
-        .container-glow::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path d="M0 0h10v10h-10zM10 10h10v10h-10zM20 20h10v10h-10zM30 30h10v10h-10zM40 40h10v10h-10z" fill="%2325283F" opacity="0.1"/></svg>') repeat;
-            opacity: 0.1;
-            z-index: 0;
-        }
-        .btn-upload {
-            background-color: #038EFC;
-            box-shadow: 0 0 10px #038EFC;
-            transition: all 0.3s ease-in-out;
-            font-weight: 700;
-        }
-        .btn-upload:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px #038EFC, 0 0 30px #038EFC;
-        }
-        .progress-bar-fill {
-            background-color: #05C46B; /* Vibrant Green */
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 5px #05C46B; }
-            50% { box-shadow: 0 0 20px #05C46B; }
-        }
-        .video-container {
-            border: 2px solid transparent;
-            transition: border-color 0.3s ease;
-            width: 100%;
-        }
-        .video-container:hover {
-            border-color: #038EFC;
-            box-shadow: 0 0 20px rgba(3, 142, 253, 0.4);
-        }
-        .highlight-title {
-            margin-bottom: 1.5rem; /* Aumentado o espaçamento entre o título e o vídeo */
-            text-align: center;
-            word-break: break-all; /* Quebra palavras muito longas */
-            font-size: 0.9rem;
-            flex-grow: 1; /* Permite que o título ocupe o espaço necessário */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 3rem; /* Garante uma altura mínima para o título */
-        }
-    </style>
+      }
+    });
+  </script>
+
+  <!-- Fonte Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 class="text-5xl font-bold mb-8 text-center text-[#E0E7FF] uppercase tracking-widest">
-            <span class="text-[#038EFC]">Video</span> Highlights
-        </h1>
-        <form id="uploadForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8">
-            <label for="fileInput" class="relative cursor-pointer bg-transparent border-2 border-[#038EFC] rounded-lg px-6 py-3 text-[#038EFC] font-semibold transition-all duration-300 hover:bg-[#038EFC] hover:text-[#0A0A1A] hover:shadow-[0_0_25px_#038EFC] w-full sm:w-auto text-center">
-                <input type="file" id="fileInput" name="file" accept=".mp4" required class="hidden">
-                <span id="file-name">Selecione o arquivo .mp4</span>
-            </label>
-            <button type="submit" class="btn-upload flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-white transition-all duration-300 w-full sm:w-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                <span>Enviar Destaques</span>
-            </button>
-        </form>
+<body class="min-h-screen bg-navy text-offwhite font-orbitron">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-5xl font-bold mb-8 text-center uppercase tracking-widest">
+      <span class="text-blueglow">Video</span> Highlights
+    </h1>
 
-        <div id="progressBar" class="w-full rounded-lg bg-[#25283F] h-8 mb-4 overflow-hidden" style="display:none;">
-            <div id="progressBarFill" class="progress-bar-fill h-full rounded-lg text-center text-white font-bold flex items-center justify-center transition-all duration-500" style="width: 0%;">0%</div>
-        </div>
-        <div id="uploadStatus" class="mb-6 text-center text-lg text-gray-400"></div>
+    <!-- Formulário -->
+    <form id="uploadForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8">
+      <label id="dropZone" for="fileInput"
+        class="relative cursor-pointer bg-transparent border-2 border-blueglow rounded-lg px-6 py-3 text-blueglow font-semibold transition-all duration-300 hover:bg-blueglow hover:text-navy hover:shadow-[0_0_25px_#038EFC] w-full sm:w-auto text-center">
+        <input type="file" id="fileInput" name="file" accept=".mp4" required class="hidden">
+        <span id="file-name">Selecione o arquivo</span>
+      </label>
 
-        <hr class="my-8 border-t-2 border-[#038EFC] opacity-50">
+      <button type="submit"
+        class="bg-blueglow shadow-[0_0_10px_#038EFC] hover:scale-105 hover:shadow-[0_0_20px_#038EFC,0_0_30px_#038EFC] transition-all duration-300 font-bold flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-white w-full sm:w-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+        </svg>
+        <span>Enviar</span>
+      </button>
+    </form>
 
-        <h2 class="text-3xl font-bold mb-6 text-center text-[#E0E7FF] uppercase tracking-wide">
-            Highlights <span class="text-[#05C46B]">Disponíveis</span>
-        </h2>
-        <div id="highlightsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {% for f in highlights %}
-            <div class="container-glow rounded-xl">
-                <a class="text-blue-400 font-semibold underline break-words hover:text-[#038EFC] transition-colors duration-300 highlight-title" href="/download/{{ f.name }}" download>{{ f.name }}</a>
-                <div class="relative w-full rounded-lg overflow-hidden video-container">
-                    <video class="w-full" controls>
-                        <source src="/download/{{ f.name }}" type="video/mp4">
-                        Seu navegador não suporta vídeo.
-                    </video>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+    <!-- Barra de progresso -->
+    <div id="progressBar" class="w-full rounded-lg bg-darkborder h-8 mb-4 overflow-hidden hidden">
+      <div id="progressBarFill"
+        class="bg-vibrantgreen animate-pulse h-full rounded-lg text-center text-white font-bold flex items-center justify-center transition-all duration-500"
+        style="width: 0%;">0%</div>
     </div>
-    <script src="/static/main.js"></script>
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const fileName = e.target.files.length > 0 ? e.target.files.item(0).name : 'Selecione o arquivo .mp4';
-            document.getElementById('file-name').textContent = fileName;
-        });
-    </script>
+    <div id="uploadStatus" class="mb-6 text-center text-lg text-gray-400"></div>
+
+    <hr class="my-8 border-t-2 border-blueglow opacity-50">
+
+    <h2 class="text-3xl font-bold mb-6 text-center uppercase tracking-wide">
+      Highlights <span class="text-vibrantgreen">Disponíveis</span>
+    </h2>
+
+    <!-- Grid -->
+    <div id="highlightsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {% for f in highlights %}
+      <div class="relative border-2 border-darkborder bg-darkcontainer shadow-[0_0_15px_rgba(3,142,253,0.2)] rounded-xl p-8 flex flex-col items-center overflow-hidden transition-colors duration-300 hover:border-blueglow hover:shadow-[0_0_20px_rgba(3,142,253,0.4)]">
+        <a class="text-blue-400 font-semibold underline hover:text-blueglow transition-colors duration-300 mb-6 text-center break-all text-sm flex items-center justify-center min-h-[3rem]"
+          href="/download/{{ f.name }}" download>{{ f.name }}</a>
+        <div class="relative w-full rounded-lg overflow-hidden">
+          <video class="w-full" controls>
+            <source src="/download/{{ f.name }}" type="video/mp4">
+            Seu navegador não suporta vídeo.
+          </video>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Mantenha seu main.js, mas os listeners abaixo rodam depois que o DOM está pronto -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      const fileNameSpan = document.getElementById('file-name');
+      const progressBar = document.getElementById('progressBar');
+
+      // fallback seguro se algo não foi encontrado
+      if (!dropZone || !fileInput || !fileNameSpan) {
+        console.warn('Upload UI: elementos não encontrados.');
+        return;
+      }
+
+      const updateFileName = (files) => {
+        if (files && files.length > 0) {
+          fileNameSpan.textContent = files[0].name;
+        } else {
+          fileNameSpan.textContent = 'Selecione o arquivo';
+        }
+      };
+
+      // change + input (alguns navegadores disparam um ou outro)
+      fileInput.addEventListener('change', (e) => updateFileName(e.target.files));
+      fileInput.addEventListener('input',  (e) => updateFileName(e.target.files));
+
+      // Drag & Drop
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-vibrantgreen');
+      });
+
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-vibrantgreen');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-vibrantgreen');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          fileInput.files = e.dataTransfer.files;  // atribui os arquivos ao input
+          updateFileName(e.dataTransfer.files);    // atualiza o label
+        }
+      });
+
+      // (Opcional) se quiser ver a barra quando enviar
+      document.getElementById('uploadForm').addEventListener('submit', () => {
+        progressBar.classList.remove('hidden');
+      });
+    });
+  </script>
+
+  <!-- Seu JS original (se precisar) -->
+  <script src="/static/main.js"></script>
 </body>
 </html>
