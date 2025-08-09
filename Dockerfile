@@ -15,7 +15,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copia os arquivos para o container
-COPY ./app .
+COPY ./app /app
 
 EXPOSE 8000
 CMD ["uvicorn", "webapp:app", "--host", "0.0.0.0", "--port", "8000"]

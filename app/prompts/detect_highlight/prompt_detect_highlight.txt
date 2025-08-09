@@ -1,0 +1,63 @@
+Exemplo de resposta esperada:
+[
+  {"start": 123, "end": 137},
+  {"start": 141, "end": 157.4}
+]
+
+INSTRUÇÕES:
+Primeiro, identifique mentalmente qual o tipo de conteúdo com base na transcrição. Exemplos comuns:
+   - Gameplay
+   - Podcast
+   - Entrevista
+   - Stand-up Comedy
+   - Vlog
+   - Aula/Tutoria
+   - Debate
+   - Palestra/Motivacional
+   - Reação/React
+   - Review de Produto
+   - Conteúdo Esportivo
+   - Notícias/Comentário Atual
+   - Música/Performance
+   - História Contada
+   - Conteúdo Motivacional/Coach
+   (O conteúdo pode ter mais de um tipo, mas escolha o que melhor representa o contexto principal.)
+
+Depois de identificar o tipo de conteúdo, selecione TODOS os trechos NATURAIS e COMPLETOS que possam ser assistidos separadamente, sempre com início, meio e fim, transmitindo:
+   - Uma ideia ou micro-história completa.
+   - Qualquer emoção clara e perceptível: humor, medo, suspense, tensão, empolgação, raiva, surpresa, inspiração, tristeza, emoção profunda.
+   - Uma mudança notável de tom de voz, ritmo ou intensidade.
+   - Uma reação visual ou verbal que se destaque.
+   - Uma conclusão marcante ou frase de impacto.
+
+IMPORTANTE: Não limite a quantidade de cortes — capture TODOS os momentos que se encaixarem nos critérios, mesmo que sejam muitos, desde que cada corte tenha sentido isolado.
+
+Exemplos de momentos de alto impacto emocional ou de engajamento:
+   - Risadas e piadas completas.
+   - Situações de suspense ou tensão crescente.
+   - Reações de medo ou susto.
+   - Momentos de surpresa ou revelação.
+   - Frases inspiradoras ou emocionantes.
+   - Discussões acaloradas ou pontos de virada.
+   - Qualquer momento que gere curiosidade ou mantenha o público preso.
+
+REGRAS DE CORTE:
+- Não há limite máximo de duração para o corte. Capture o tempo necessário para manter o contexto.
+- Aceite cortes curtos, médios ou longos, desde que tenham sentido isolado.
+- É permitido fazer cortes consecutivos, desde que não sejam sobrepostos e cada um tenha valor próprio.
+- Aceite cortes de qualquer pessoa no áudio, desde que o corte faça sentido isoladamente, tenha emoção, contexto ou potencial de engajamento.
+- Evite cortes irrelevantes ao tipo de conteúdo identificado (ex.: em gameplay, apenas barulho do jogo sem reação; em podcast, longos silêncios).
+- TODOS os cortes devem fazer sentido isoladamente, mesmo se forem parte de algo maior.
+
+FORMATAÇÃO DA RESPOSTA:
+- Não escreva nenhum texto, comentário, explicação, análise ou resumo fora do JSON!
+- A resposta deve começar IMEDIATAMENTE com [ e terminar com ].
+- Se não houver cortes, retorne apenas [].
+- Use segundos nos campos "start" e "end" no formato decimal, com no máximo 1 casa decimal.
+
+DICAS:
+- Sempre que possível, prefira cortes com forte carga emocional ou de interesse.
+- Capture todos os momentos relevantes, não apenas os melhores.
+- Adapte a escolha dos cortes ao tipo de conteúdo identificado.
+
+Transcrição: TRANSCRIBE

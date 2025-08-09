@@ -2,17 +2,12 @@
 <html>
 <head>
   <title>Video Highlights</title>
-
-  <!-- TwindCSS -->
   <script type="module">
     import { setup } from 'https://cdn.skypack.dev/twind/shim';
     setup({
       theme: {
         extend: {
-          fontFamily: {
-            sans: ["Orbitron", "sans-serif"],
-            orbitron: ["Orbitron", "sans-serif"],
-          },
+          fontFamily: { orbitron: ["Orbitron", "sans-serif"] },
           colors: {
             navy: "#0A0A1A",
             offwhite: "#E0E7FF",
@@ -25,119 +20,89 @@
       }
     });
   </script>
-
-  <!-- Fonte Orbitron -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen bg-navy text-offwhite font-orbitron">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- SEÇÃO 1: Form -->
+  <div class="max-w-4xl mx-auto px-4 pt-8">
     <h1 class="text-5xl font-bold mb-8 text-center uppercase tracking-widest">
       <span class="text-blueglow">Video</span> Highlights
     </h1>
 
-    <!-- Formulário -->
-    <form id="uploadForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8">
-      <label id="dropZone" for="fileInput"
-        class="relative cursor-pointer bg-transparent border-2 border-blueglow rounded-lg px-6 py-3 text-blueglow font-semibold transition-all duration-300 hover:bg-blueglow hover:text-navy hover:shadow-[0_0_25px_#038EFC] w-full sm:w-auto text-center">
-        <input type="file" id="fileInput" name="file" accept=".mp4" required class="hidden">
-        <span id="file-name">Selecione o arquivo</span>
-      </label>
+    <form id="uploadForm" class="flex flex-col gap-4 mb-8">
+      <!-- Drag & Drop -->
+      <div id="dropZone"
+           class="relative cursor-pointer border-2 border-blueglow rounded-lg px-6 py-6 text-center transition-all duration-300 hover:bg-blueglow hover:text-navy">
+        <input type="file" id="fileInput" accept=".mp4" class="hidden">
+        <p id="file-name">Arraste seu vídeo aqui ou clique para selecionar (.mp4)</p>
+        <video id="videoPreview" class="mt-4 w-full max-h-64 rounded-lg hidden" controls></video>
+      </div>
 
-      <button type="submit"
-        class="bg-blueglow shadow-[0_0_10px_#038EFC] hover:scale-105 hover:shadow-[0_0_20px_#038EFC,0_0_30px_#038EFC] transition-all duration-300 font-bold flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-white w-full sm:w-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-        </svg>
-        <span>Enviar</span>
+      <!-- Prompt + Ver conteúdo -->
+      <div class="flex flex-col sm:flex-row gap-4">
+        <select id="dhPromptSelect"
+                class="flex-1 bg-darkcontainer border-2 border-darkborder rounded-lg px-4 py-3 focus:outline-none focus:border-blueglow">
+          <option value="" disabled selected>Carregando prompts...</option>
+        </select>
+        <button id="viewPromptBtn" type="button"
+                class="bg-transparent border-2 border-blueglow text-blueglow rounded-lg px-4 py-2 hover:bg-blueglow hover:text-navy">
+          Ver conteúdo
+        </button>
+      </div>
+
+      <!-- Custom prompt -->
+      <label class="flex items-center gap-2">
+        <input type="checkbox" id="useDhCustom" class="w-5 h-5 accent-blueglow">
+        <span class="text-sm opacity-80">Usar prompt customizado</span>
+      </label>
+      <textarea id="dhCustomText" rows="10" style="display:none"
+                class="w-full bg-darkcontainer border-2 border-darkborder rounded-lg px-4 py-3 focus:outline-none focus:border-blueglow"
+                placeholder="Cole aqui um prompt customizado..."></textarea>
+
+      <!-- Botão Enviar -->
+      <button id="sendBtn" type="submit" disabled
+              class="bg-blueglow opacity-50 cursor-not-allowed font-bold flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-white">
+        Enviar
       </button>
     </form>
 
-    <!-- Barra de progresso -->
+    <!-- Barra de progresso + status -->
     <div id="progressBar" class="w-full rounded-lg bg-darkborder h-8 mb-4 overflow-hidden hidden">
       <div id="progressBarFill"
-        class="bg-vibrantgreen animate-pulse h-full rounded-lg text-center text-white font-bold flex items-center justify-center transition-all duration-500"
+        class="bg-vibrantgreen animate-pulse h-full rounded-lg text-center text-white font-bold flex items-center justify-center transition-all"
         style="width: 0%;">0%</div>
     </div>
-    <div id="uploadStatus" class="mb-6 text-center text-lg text-gray-400"></div>
-
-    <hr class="my-8 border-t-2 border-blueglow opacity-50">
-
-    <h2 class="text-3xl font-bold mb-6 text-center uppercase tracking-wide">
-      Highlights <span class="text-vibrantgreen">Disponíveis</span>
-    </h2>
-
-    <!-- Grid -->
-    <div id="highlightsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      {% for f in highlights %}
-      <div class="relative border-2 border-darkborder bg-darkcontainer shadow-[0_0_15px_rgba(3,142,253,0.2)] rounded-xl p-8 flex flex-col items-center overflow-hidden transition-colors duration-300 hover:border-blueglow hover:shadow-[0_0_20px_rgba(3,142,253,0.4)]">
-        <a class="text-blue-400 font-semibold underline hover:text-blueglow transition-colors duration-300 mb-6 text-center break-all text-sm flex items-center justify-center min-h-[3rem]"
-          href="/download/{{ f.name }}" download>{{ f.name }}</a>
-        <div class="relative w-full rounded-lg overflow-hidden">
-          <video class="w-full" controls>
-            <source src="/download/{{ f.name }}" type="video/mp4">
-            Seu navegador não suporta vídeo.
-          </video>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
+    <div id="uploadStatus" class="mb-10 text-center text-lg text-gray-400"></div>
   </div>
 
-  <!-- Mantenha seu main.js, mas os listeners abaixo rodam depois que o DOM está pronto -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const dropZone = document.getElementById('dropZone');
-      const fileInput = document.getElementById('fileInput');
-      const fileNameSpan = document.getElementById('file-name');
-      const progressBar = document.getElementById('progressBar');
+  <hr class="max-w-4xl mx-auto border-t-2 border-blueglow opacity-50">
 
-      // fallback seguro se algo não foi encontrado
-      if (!dropZone || !fileInput || !fileNameSpan) {
-        console.warn('Upload UI: elementos não encontrados.');
-        return;
-      }
+  <!-- SEÇÃO 2: Highlights -->
+  <section class="w-full">
+    <div class="mx-auto px-4 py-8" style="max-width: 1600px;">
+      <h2 class="text-3xl font-bold mb-6 text-center uppercase tracking-wide">
+        Highlights <span class="text-vibrantgreen">Disponíveis</span>
+      </h2>
 
-      const updateFileName = (files) => {
-        if (files && files.length > 0) {
-          fileNameSpan.textContent = files[0].name;
-        } else {
-          fileNameSpan.textContent = 'Selecione o arquivo';
-        }
-      };
+      <!-- 1/2/3/4 colunas, sempre ocupando a largura disponível -->
+      <div id="highlightsGrid"
+           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+        {% for f in highlights %}
+        <div class="relative border-2 border-darkborder bg-darkcontainer rounded-xl p-4 flex flex-col items-center w-full">
+          <a class="text-blue-400 font-semibold underline hover:text-blueglow block text-center break-all text-sm mb-2"
+            href="/download/{{ f.name }}" download>{{ f.name }}</a>
+          <video class="w-full rounded" style="aspect-ratio: 16 / 9; height:auto;" controls>
+            <source src="/download/{{ f.name }}" type="video/mp4">
+          </video>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
 
-      // change + input (alguns navegadores disparam um ou outro)
-      fileInput.addEventListener('change', (e) => updateFileName(e.target.files));
-      fileInput.addEventListener('input',  (e) => updateFileName(e.target.files));
-
-      // Drag & Drop
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('border-vibrantgreen');
-      });
-
-      dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('border-vibrantgreen');
-      });
-
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('border-vibrantgreen');
-        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-          fileInput.files = e.dataTransfer.files;  // atribui os arquivos ao input
-          updateFileName(e.dataTransfer.files);    // atualiza o label
-        }
-      });
-
-      // (Opcional) se quiser ver a barra quando enviar
-      document.getElementById('uploadForm').addEventListener('submit', () => {
-        progressBar.classList.remove('hidden');
-      });
-    });
-  </script>
-
-  <!-- Seu JS original (se precisar) -->
   <script src="/static/main.js"></script>
 </body>
 </html>

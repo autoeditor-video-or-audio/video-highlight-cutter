@@ -1,139 +1,179 @@
-const form = document.getElementById('uploadForm');
 const fileInput = document.getElementById('fileInput');
+const fileNameSpan = document.getElementById('file-name');
+const videoPreview = document.getElementById('videoPreview');
+const dropZone = document.getElementById('dropZone');
+const sendBtn = document.getElementById('sendBtn');
+
+const dhPromptSelect = document.getElementById('dhPromptSelect');
+const useDhCustom = document.getElementById('useDhCustom');
+const dhCustomText = document.getElementById('dhCustomText');
+const viewPromptBtn = document.getElementById('viewPromptBtn');
 const progressBar = document.getElementById('progressBar');
 const progressBarFill = document.getElementById('progressBarFill');
 const uploadStatus = document.getElementById('uploadStatus');
+
 let jobId = null;
-
-// Guarda a lista atual de highlights na página
 let lastHighlights = [];
-let hideBarTimeout = null;
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const file = fileInput.files[0];
-    if (!file) return;
+// Drag & Drop
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('bg-blueglow', 'text-navy');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('bg-blueglow', 'text-navy');
+});
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('bg-blueglow', 'text-navy');
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    handleFile(fileInput.files[0]);
+  }
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length) handleFile(fileInput.files[0]);
+});
 
-    const formData = new FormData();
-    formData.append('file', file);
+function handleFile(file) {
+  if (!file.name.endsWith('.mp4')) {
+    alert('Somente arquivos .mp4 são permitidos');
+    return;
+  }
+  fileNameSpan.textContent = file.name;
+  videoPreview.src = URL.createObjectURL(file);
+  videoPreview.classList.remove('hidden');
+  checkFormReady();
+}
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/upload', true);
+// Carregar prompts
+async function loadPrompts() {
+  const res = await fetch('/api/prompts/detect_highlight');
+  const data = await res.json();
+  dhPromptSelect.innerHTML = '';
+  if (!data.items?.length) {
+    dhPromptSelect.innerHTML = '<option value="">Nenhum prompt</option>';
+    return;
+  }
+  data.items.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.name;
+    opt.textContent = p.label || p.name;
+    dhPromptSelect.appendChild(opt);
+  });
+  checkFormReady();
+}
+loadPrompts();
 
-    xhr.upload.onprogress = function(e) {
-        if (e.lengthComputable) {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            progressBar.style.display = '';
-            progressBarFill.style.width = percent + '%';
-            progressBarFill.textContent = percent + '%';
-            // Limpa timeout (se alguém resetar upload, timeout some)
-            if (hideBarTimeout) clearTimeout(hideBarTimeout);
-        }
-    };
+function checkFormReady() {
+  if (fileInput.files.length > 0 && (dhPromptSelect.value || (useDhCustom.checked && dhCustomText.value.trim()))) {
+    sendBtn.disabled = false;
+    sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+  } else {
+    sendBtn.disabled = true;
+    sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+  }
+}
 
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            jobId = response.id;
-            uploadStatus.innerHTML = '<b>Upload concluído! Processando...</b>';
-            progressBarFill.textContent = '100%';
-            progressBarFill.style.width = '100%';
-            // Esconde barra de progresso depois de 5s
-            hideBarTimeout = setTimeout(() => {
-                progressBar.style.display = 'none';
-            }, 5000);
-            lastHighlights = []; // limpa highlights, pois começará novo job
-            pollStatus();
-        } else {
-            uploadStatus.innerHTML = '<b style="color:red;">Erro ao enviar o arquivo.</b>';
-        }
-    };
+dhPromptSelect.addEventListener('change', checkFormReady);
+useDhCustom.addEventListener('change', () => {
+  dhCustomText.style.display = useDhCustom.checked ? 'block' : 'none';
+  checkFormReady();
+});
+dhCustomText.addEventListener('input', checkFormReady);
 
-    xhr.onerror = function() {
-        uploadStatus.innerHTML = '<b style="color:red;">Erro ao enviar o arquivo.</b>';
-    };
+viewPromptBtn.addEventListener('click', async () => {
+  const name = dhPromptSelect.value;
+  if (!name) return;
+  const res = await fetch(`/api/prompts/detect_highlight/${encodeURIComponent(name)}`);
+  const data = await res.json();
+  if (data?.content) {
+    dhCustomText.value = data.content;
+    dhCustomText.style.display = 'block';
+    useDhCustom.checked = true;
+    checkFormReady();
+  }
+});
 
-    progressBar.style.display = '';
-    progressBarFill.style.width = '0%';
-    progressBarFill.textContent = '0%';
-    uploadStatus.innerHTML = '';
+// Upload
+document.getElementById('uploadForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+  if (useDhCustom.checked && dhCustomText.value.trim()) {
+    formData.append('prompt_text', dhCustomText.value.trim());
+  } else {
+    formData.append('prompt_name', dhPromptSelect.value);
+  }
 
-    if (hideBarTimeout) clearTimeout(hideBarTimeout);
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/upload', true);
 
-    xhr.send(formData);
+  xhr.upload.onprogress = (e) => {
+    if (e.lengthComputable) {
+      const percent = Math.round((e.loaded / e.total) * 100);
+      progressBar.classList.remove('hidden');
+      progressBarFill.style.width = percent + '%';
+      progressBarFill.textContent = percent + '%';
+    }
+  };
+
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      const response = JSON.parse(xhr.responseText);
+      jobId = response.id;
+      uploadStatus.innerHTML = '<b>Upload concluído! Processando...</b>';
+      progressBarFill.style.width = '100%';
+      progressBarFill.textContent = '100%';
+      pollStatus();
+    } else {
+      uploadStatus.innerHTML = '<b style="color:red;">Erro no upload</b>';
+    }
+  };
+  xhr.send(formData);
 });
 
 function pollStatus() {
-    if (!jobId) return;
-    fetch(`/status/${jobId}`)
-        .then(res => res.json())
-        .then(status => {
-            uploadStatus.innerHTML = "<b>" + status.step + "</b>";
+  if (!jobId) return;
+  fetch(`/status/${jobId}`)
+    .then(res => res.json())
+    .then(status => {
+      uploadStatus.innerHTML = `<b>${status.step}</b>`;
 
-            // Progress bar lógica
-            let corteMatch = null;
-            if (
-                status.step &&
-                (corteMatch = status.step.match(/Cortando vídeo \((\d+)\/(\d+)\)/))
-            ) {
-                // Estamos cortando vídeos (ex: "Cortando vídeo (3/10)...")
-                let atual = parseInt(corteMatch[1], 10);
-                let total = parseInt(corteMatch[2], 10);
-                let percent = Math.round((atual - 1) / total * 100);
-                if (percent < 0) percent = 0;
-                if (percent > 100) percent = 100;
-                progressBar.style.display = '';
-                progressBarFill.style.width = percent + '%';
-                progressBarFill.textContent = percent + '%';
-                if (hideBarTimeout) clearTimeout(hideBarTimeout);
-            } else if (
-                status.step &&
-                status.step.startsWith("Upload")
-            ) {
-                // Upload ainda, não faz nada, deixa o onprogress cuidar
-            } else {
-                // Em outras etapas, oculta a barra
-                progressBar.style.display = 'none';
-            }
+      if (status.progress > 0 && status.progress <= 100) {
+        progressBar.classList.remove('hidden');
+        progressBarFill.style.width = status.progress + '%';
+        progressBarFill.textContent = status.progress + '%';
+      }
 
-            // Verifica se a lista mudou (só re-renderiza se mudou)
-            if (!arraysEqual(status.highlights || [], lastHighlights)) {
-                renderHighlights(status.highlights || []);
-                lastHighlights = [...(status.highlights || [])];
-            }
+      if (JSON.stringify(status.highlights) !== JSON.stringify(lastHighlights)) {
+        renderHighlights(status.highlights);
+        lastHighlights = status.highlights;
+      }
 
-            if (status.progress < 100 && status.step !== "Concluído") {
-                setTimeout(pollStatus, 1500);
-            } else {
-                uploadStatus.innerHTML = "<b>Processamento concluído!</b>";
-                setTimeout(() => window.location.reload(), 1200);
-            }
-        });
-}
-
-// Função para comparar arrays simples
-function arraysEqual(a, b) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-}
-
-// Renderiza os highlights
-function renderHighlights(files) {
-    const grid = document.querySelector("#highlightsGrid");
-    if (!grid) return;
-    grid.innerHTML = "";
-    files.forEach(f => {
-        grid.innerHTML += `
-          <div class="bg-white rounded shadow p-3 flex flex-col items-center border w-full max-w-[560px]">
-            <a class="text-blue-700 font-semibold underline break-all mb-2 text-center text-xs" href="/download/${f}" download>${f}</a>
-            <video class="rounded w-full" style="max-width:540px" controls>
-                <source src="/download/${f}" type="video/mp4">
-                Seu navegador não suporta vídeo.
-            </video>
-          </div>
-        `;
+      if (status.progress < 100 && status.step !== "Concluído") {
+        setTimeout(pollStatus, 1500);
+      } else {
+        uploadStatus.innerHTML = "<b>Processamento concluído!</b>";
+        setTimeout(() => window.location.reload(), 1200);
+      }
     });
+}
+
+function renderHighlights(files) {
+  const grid = document.getElementById('highlightsGrid');
+  grid.innerHTML = '';
+  files.forEach(f => {
+    grid.innerHTML += `
+      <div class="relative border-2 border-darkborder bg-darkcontainer rounded-xl p-4 flex flex-col items-center w-full">
+        <a class="text-blue-400 font-semibold underline hover:text-blueglow block text-center break-all text-sm mb-2"
+          href="/download/${f}" download>${f}</a>
+        <video class="w-full rounded" style="aspect-ratio: 16 / 9; height:auto;" controls>
+          <source src="/download/${f}" type="video/mp4">
+        </video>
+      </div>
+    `;
+  });
 }
