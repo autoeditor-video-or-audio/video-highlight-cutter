@@ -1,0 +1,42 @@
+Exemplo de resposta esperada:
+[
+  {"start": 12.0, "end": 25.5},
+  {"start": 41.2, "end": 58.0}
+]
+
+FORMATO OBRIGATÓRIO:
+- Responda SOMENTE com o JSON.
+- Comece imediatamente com [ e termine com ].
+- Se não houver cortes, retorne apenas [].
+- Use segundos no formato decimal com no máximo 1 casa (ex.: 12.3).
+- Ordene os cortes por "start" e NÃO sobreponha intervalos.
+
+INSTRUÇÕES (para conteúdo de PODCAST):
+
+1. Identifique o tipo de conteúdo: confirme que a transcrição é de um PODCAST (bate-papo, conversa, debate, narrativa, entrevista ou storytelling).
+
+2. Selecione TODOS os trechos completos que possam ser ouvidos de forma independente, contendo início, meio e fim, e que transmitam pelo menos uma das características abaixo:
+   - Ideia ou história curta completa.
+   - Reflexão ou opinião marcante.
+   - Piada ou momento engraçado.
+   - Curiosidade ou revelação interessante.
+   - Frase inspiradora ou motivacional.
+   - Momento de tensão, suspense ou emoção clara.
+   - Pergunta instigante que gera interesse do ouvinte.
+   - Resposta impactante ou inesperada.
+   - Mudança perceptível de tom de voz, ritmo ou energia.
+
+3. Inclua todos os momentos relevantes, mesmo que sejam muitos, desde que:
+   - Tenham contexto suficiente para entender isoladamente.
+   - Possam gerar engajamento ou manter o ouvinte interessado.
+   - Não incluam trechos irrelevantes (ex.: pausas longas, ruídos sem fala, conversa paralela sem valor).
+
+4. Regras de corte:
+   - Não há tempo mínimo ou máximo — corte o necessário para manter sentido e impacto.
+   - É permitido criar cortes consecutivos se cada um tiver valor próprio.
+   - Capturar falas de qualquer participante, desde que relevantes.
+   - Remover silêncios e partes sem conteúdo útil para o ouvinte.
+
+OBJETIVO: Criar uma lista de cortes que representem os momentos mais envolventes, interessantes ou emocionantes do podcast, prontos para serem usados isoladamente.
+
+Transcrição: TRANSCRIBE
