@@ -1,14 +1,16 @@
 # Audio Highlight Cutter
 
-Um webapp simples e prático para **upload de vídeos (.mp4)**, extração automática de **highlights** (momentos importantes) e **download/visualização** dos cortes diretamente pelo navegador.
+Um webapp simples e prático para **upload de vídeos (.mp4)**, extração automática de **highlights** (momentos importantes) e **download/visualização** dos cortes diretamente pelo navegador.  
+Agora com **opção de seleção de prompt** para personalizar a detecção de highlights e **layout otimizado** para exibir até 4 vídeos por linha.
 
 ---
 
 ## 🚀 Como funciona
 
 1. **Upload:** Envie um vídeo `.mp4` pela interface web.
-2. **Processamento:** O sistema extrai o áudio, faz transcrição automática (Whisper), detecta os highlights via IA e corta os trechos relevantes.
-3. **Acompanhamento em tempo real:** Os highlights aparecem na página para assistir, baixar ou compartilhar enquanto o processamento ocorre.
+2. **Escolha do prompt:** Selecione um prompt pré-configurado ou ative a opção de **prompt customizado** para usar seu próprio texto.
+3. **Processamento:** O sistema extrai o áudio, faz transcrição automática (Whisper), detecta os highlights via IA (Ollama) e corta os trechos relevantes.
+4. **Acompanhamento em tempo real:** Os highlights aparecem organizados na página, com até 4 vídeos por linha, prontos para assistir, baixar ou compartilhar enquanto o processamento ocorre.
 
 ---
 
@@ -16,7 +18,7 @@ Um webapp simples e prático para **upload de vídeos (.mp4)**, extração autom
 
 Veja como é fácil acompanhar o processo:
 
-![Exemplo da interface Audio Highlight Cutter](assets/exemplo-frontend.jpg)
+![Exemplo da interface Audio Highlight Cutter](assets/exemplo-frontend.png)
 
 ---
 
@@ -27,7 +29,7 @@ Veja como é fácil acompanhar o processo:
 - **Ollama** (IA para seleção dos melhores highlights)
 - **Jinja2** (frontend dinâmico)
 - **TailwindCSS** (layout responsivo)
-- **JavaScript** (atualização dinâmica de status)
+- **JavaScript** (atualização dinâmica de status e seleção de prompt)
 
 ---
 
@@ -79,6 +81,7 @@ http://localhost:8000
 - Os arquivos processados ficam na pasta `processed/`
 - Highlights podem ser baixados em `.mp4`
 - Transcrições e cortes intermediários também são salvos
+- Interface exibe **até 4 vídeos por linha** para melhor aproveitamento do espaço
 
 ---
 
@@ -196,6 +199,7 @@ CMD ["uvicorn", "webapp:app", "--host", "0.0.0.0", "--port", "8000"]
 
 - Os highlights aparecem automaticamente enquanto o processamento ocorre.
 - Todos os arquivos processados ficam organizados na pasta `processed/`.
+- É possível escolher entre **prompts pré-definidos** ou criar um **prompt customizado**.
 - O sistema pode baixar o modelo de IA do Ollama automaticamente, se necessário.
 
 ---
