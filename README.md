@@ -1,4 +1,4 @@
-# Audio Highlight Cutter
+# Video Highlight Cutter
 
 Um webapp simples e prático para **upload de vídeos (.mp4)**, extração automática de **highlights** (momentos importantes) e **download/visualização** dos cortes diretamente pelo navegador.  
 Agora com **opção de seleção de prompt** para personalizar a detecção de highlights e **layout otimizado** para exibir até 4 vídeos por linha.
@@ -18,7 +18,7 @@ Agora com **opção de seleção de prompt** para personalizar a detecção de h
 
 Veja como é fácil acompanhar o processo:
 
-![Exemplo da interface Audio Highlight Cutter](assets/exemplo-frontend.png)
+![Exemplo da interface Video Highlight Cutter](assets/exemplo-frontend.png)
 
 ---
 
