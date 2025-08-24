@@ -195,6 +195,49 @@ CMD ["uvicorn", "webapp:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ---
 
+## ⚙️ Configuração da IA (Ollama)
+
+O comportamento da IA pode ser ajustado pelo arquivo `.env`.  
+Esses parâmetros controlam como o modelo gera as respostas, permitindo mais **precisão** ou mais **criatividade**, conforme a necessidade.
+
+```ini
+# TEMPERATURE → controla a aleatoriedade da resposta.
+# Baixo (0.1–0.3) = determinístico, mais preciso.
+# Alto (0.7–1.0) = criativo, mais variado.
+OLLAMA_TEMPERATURE=0.1
+
+# TOP_P → filtro de probabilidade acumulada (Nucleus Sampling).
+# Ex.: 0.8 = considera apenas palavras dentro do top 80% de probabilidade.
+# Baixo = mais restrito; alto = mais diverso.
+OLLAMA_TOP_P=0.8
+
+# TOP_K → limita quantas opções de palavras considerar a cada passo.
+# Ex.: 50 = avalia apenas as 50 mais prováveis.
+# Baixo = foco; alto = diversidade.
+OLLAMA_TOP_K=50
+
+# REPEAT_PENALTY → penaliza repetição de palavras/frases já usadas.
+# >1 reduz repetições. Ex.: 1.2 é equilíbrio comum.
+OLLAMA_REPEAT_PENALTY=1.2
+
+# NUM_CTX → tamanho do contexto (quantos tokens o modelo "lê").
+# Maior = suporta transcrições mais longas, mas exige mais memória.
+# 8192 tokens ≈ 6.000 palavras.
+OLLAMA_NUM_CTX=8192
+
+# NUM_PREDICT → número máximo de tokens que o modelo pode gerar.
+# Ex.: 256 ≈ 200 palavras.
+# Útil para limitar saídas longas (ex.: só JSON).
+OLLAMA_NUM_PREDICT=256
+```
+
+> 🔧 **Dica prática:**  
+> - Para **cortes mais precisos** → use TEMPERATURE baixo (0.1–0.3).  
+> - Para **explorar cortes criativos** → aumente TEMPERATURE + TOP_P.  
+> - Para vídeos longos → aumente NUM_CTX (se tiver memória suficiente).
+
+---
+
 ## ℹ️ Observações
 
 - Os highlights aparecem automaticamente enquanto o processamento ocorre.
