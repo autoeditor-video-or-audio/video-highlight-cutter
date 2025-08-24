@@ -4,7 +4,7 @@ Exemplo de resposta esperada:
   {"start": 141, "end": 157.4}
 ]
 
-⚠️ FORMATO OBRIGATÓRIO:
+FORMATO OBRIGATÓRIO:
 - Responda SOMENTE com o JSON.
 - Comece imediatamente com [ e termine com ].
 - Se não houver cortes, retorne apenas [].

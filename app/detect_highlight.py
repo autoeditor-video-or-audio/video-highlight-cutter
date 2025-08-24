@@ -115,10 +115,22 @@ def request_ollama(prompt: str) -> str:
     OLLAMA_PORT = os.getenv("OLLAMA_PORT")
     OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
     OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT", "2400"))
+
+    # Options com defaults sensatos + override por env se quiser
+    options = {
+        "temperature": float(os.getenv("OLLAMA_TEMPERATURE", "0.2")),
+        "top_p": float(os.getenv("OLLAMA_TOP_P", "0.9")),
+        "top_k": int(os.getenv("OLLAMA_TOP_K", "40")),
+        "repeat_penalty": float(os.getenv("OLLAMA_REPEAT_PENALTY", "1.1")),
+        "num_ctx": int(os.getenv("OLLAMA_NUM_CTX", "8192")),
+        "num_predict": int(os.getenv("OLLAMA_NUM_PREDICT", "512")),
+    }
+
     url = f"http://{OLLAMA_HOSTNAME}:{OLLAMA_PORT}/api/generate"
     payload = {
         "model": OLLAMA_MODEL,
         "stream": False,
+        "options": options,        # hiperparâmetros
         "prompt": prompt
     }
     logger.info(f"Enviando prompt para {url}...")
