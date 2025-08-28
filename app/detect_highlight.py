@@ -12,6 +12,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --------------------------
+# Utilidades
+# --------------------------
+def env_flag(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in ("1", "true", "yes", "y", "on")
+
+# --------------------------
 # Utilidades de transcrição
 # --------------------------
 def read_srt_transcription(srt_path: str) -> str:
@@ -76,7 +82,7 @@ def generate_prompt(prompt_template: str, transcription_text: str, audio_duratio
     return prompt
 
 # --------------------------
-# Ollama
+# Ollama (padrão atual)
 # --------------------------
 def ensure_ollama_model() -> bool:
     OLLAMA_HOSTNAME = os.getenv("OLLAMA_HOSTNAME")
@@ -116,7 +122,6 @@ def request_ollama(prompt: str) -> str:
     OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
     OLLAMA_TIMEOUT = int(os.getenv("OLLAMA_TIMEOUT", "2400"))
 
-    # Options com defaults sensatos + override por env se quiser
     options = {
         "temperature": float(os.getenv("OLLAMA_TEMPERATURE", "0.2")),
         "top_p": float(os.getenv("OLLAMA_TOP_P", "0.9")),
@@ -130,16 +135,87 @@ def request_ollama(prompt: str) -> str:
     payload = {
         "model": OLLAMA_MODEL,
         "stream": False,
-        "options": options,        # hiperparâmetros
+        "options": options,
         "prompt": prompt
     }
-    logger.info(f"Enviando prompt para {url}...")
+    logger.info(f"Enviando prompt para {url} (Ollama)...")
     response = requests.post(url, json=payload, timeout=OLLAMA_TIMEOUT)
     response.raise_for_status()
     data = response.json()
     result = data.get("response", "").strip()
-    logger.info(f"Resposta do Ollama: {result}")
+    logger.info(f"Resposta do Ollama: {result[:500]}{'...' if len(result) > 500 else ''}")
     return result
+
+# --------------------------
+# ChatGPT API (alternativa)
+# --------------------------
+def request_chatgpt(prompt: str) -> str:
+    """
+    Faz chamada à API de Chat Completions compatível com OpenAI.
+    Variáveis de ambiente necessárias:
+      - OPENAI_API_KEY (obrigatória)
+      - CHATGPT_MODEL (ex.: 'gpt-4o-mini' | 'gpt-4o')
+      - OPENAI_BASE_URL (opcional; padrão https://api.openai.com/v1)
+      - CHATGPT_TEMPERATURE (opcional; padrão 0.2)
+      - CHATGPT_TIMEOUT (opcional; padrão 240s)
+    """
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY não definido. Defina-o para usar USE_CHATGPT=true.")
+
+    model = os.getenv("CHATGPT_MODEL", "gpt-4o-mini")
+    base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+    endpoint = f"{base_url}/chat/completions"
+    temperature = float(os.getenv("CHATGPT_TEMPERATURE", "0.2"))
+    timeout = int(os.getenv("CHATGPT_TIMEOUT", "240"))
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    # Reforço mínimo de system para obedecer formato
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "Você extrai cortes de vídeo. Responda ESTRITAMENTE com um array JSON de objetos "
+                '{"start": <segundos>, "end": <segundos>}' " e nada mais."
+            ),
+        },
+        {"role": "user", "content": prompt},
+    ]
+
+    payload = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "response_format": {"type": "json_object"}  # ajuda a evitar texto solto; pode retornar dict
+    }
+
+    logger.info(f"Enviando prompt para {endpoint} (ChatGPT: {model})...")
+    resp = requests.post(endpoint, headers=headers, json=payload, timeout=timeout)
+    try:
+        resp.raise_for_status()
+    except Exception as e:
+        logger.error(f"Erro HTTP ChatGPT: {resp.status_code} - {resp.text}")
+        raise e
+
+    data = resp.json()
+    # Pode voltar um objeto JSON por conta do response_format. Vamos extrair texto com fallback.
+    try:
+        content = data["choices"][0]["message"]["content"]
+        # content pode ser JSON (string JSON) ou um objeto serializado pelo servidor
+        if isinstance(content, dict):
+            result = json.dumps(content, ensure_ascii=False)
+        else:
+            result = str(content)
+    except Exception:
+        # fallback para formatos alternativos
+        result = json.dumps(data, ensure_ascii=False)
+
+    logger.info(f"Resposta do ChatGPT: {result[:500]}{'...' if len(result) > 500 else ''}")
+    return result.strip()
 
 # --------------------------
 # Parsing do retorno
@@ -148,13 +224,20 @@ def extract_json_list(text: str):
     """
     Extrai a lista JSON do texto, mesmo que haja comentários antes/depois.
     Garante lista no retorno (se vier dict, vira [dict]).
+    Também remove cercas de código (```).
     """
     try:
-        m = re.search(r'\[.*\]', text, re.DOTALL)
+        cleaned = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE)
+        m = re.search(r'\[.*\]', cleaned, re.DOTALL)
         if m:
             obj = json.loads(m.group(0))
         else:
-            obj = json.loads(text)
+            # pode ter vindo um objeto {"clips":[...]} se response_format for json_object
+            parsed = json.loads(cleaned)
+            if isinstance(parsed, dict) and "clips" in parsed and isinstance(parsed["clips"], list):
+                obj = parsed["clips"]
+            else:
+                obj = parsed
     except Exception as e:
         raise ValueError(f"Não foi possível decodificar JSON dos cortes: {e}")
 
@@ -196,10 +279,20 @@ def main():
 
     prompt = generate_prompt(prompt_template, transcription, duration)
 
-    if ensure_ollama_model():
-        result = request_ollama(prompt)
-    else:
-        logger.error("O modelo não está disponível e não pôde ser baixado.")
+    use_chatgpt = env_flag("USE_CHATGPT", "false")
+    try:
+        if use_chatgpt:
+            logger.info("USE_CHATGPT=true → usando API do ChatGPT.")
+            result = request_chatgpt(prompt)
+        else:
+            logger.info("USE_CHATGPT=false → usando Ollama local.")
+            if ensure_ollama_model():
+                result = request_ollama(prompt)
+            else:
+                logger.error("O modelo Ollama não está disponível e não pôde ser baixado.")
+                sys.exit(1)
+    except Exception as e:
+        logger.error(f"Falha ao obter resposta do modelo: {e}")
         sys.exit(1)
 
     highlight_path = os.path.splitext(srt_path)[0] + ".highlight.json"
@@ -209,7 +302,7 @@ def main():
             json.dump(highlight_data, f, ensure_ascii=False, indent=2)
         logger.info(f"Highlight(s) salvo(s) em {highlight_path}")
     except Exception as e:
-        logger.error(f"Não foi possível processar o resultado do Ollama: {result} - erro: {e}")
+        logger.error(f"Não foi possível processar o resultado do modelo: {result} - erro: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

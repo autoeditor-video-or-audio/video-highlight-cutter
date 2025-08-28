@@ -1,0 +1,55 @@
+Exemplo de resposta:
+[
+  {"start": 12.3, "end": 47.8},
+  {"start": 79.1, "end": 102.0}
+]
+
+SAÍDA (OBRIGATÓRIA)
+- Responda SOMENTE com um ARRAY JSON (comece com [ e termine com ]).
+- É PROIBIDO responder com objeto JSON (ex.: {} ou {"cortes":[...]}). Se precisar retornar algo, responda apenas o ARRAY.
+- "start" e "end" em segundos decimais (máx. 1 casa), ordenados por "start", sem sobreposição.
+- Se não houver cortes válidos: [].
+
+OBJETIVO (POLÍTICA)
+- Produzir cortes ≤ 90.0 s que capturem declarações políticas, argumentos ou debates completos.
+- Cada corte deve ter início → desenvolvimento → fechamento claro (conclusão, frase de impacto ou reação).
+- Nunca dividir por tempo fixo; apenas por conclusão de argumento ou troca de tópico.
+
+REGRAS DURAS
+R1. Um argumento/declaração = um corte.  
+R2. Nunca encerrar em frase incompleta. Encerrar após ponto final, interrogação, exclamação ou declaração concluída.  
+R3. Adicionar PAD = 0.8 s após fechamento para incluir reação (aplausos, vaias, silêncio).  
+R4. Máx. 90.0 s por corte. Se uma fala exceder, selecione subtrechos coesos (pergunta→resposta, acusação→defesa) que caibam no limite.  
+R5. É proibido cortes em blocos regulares de tempo (ex.: 30s, 45s). Cada corte deve existir por causa de conteúdo político real.  
+R6. Não encerrar se a próxima fala começar em menos de 0.5 s; estenda ou combine no mesmo bloco.
+
+GATILHOS POLÍTICOS (MOMENTOS QUE DEVEM VIRAR CORTE)
+- Declarações fortes ou promessas de campanha.  
+- Acusações ou críticas contra adversários.  
+- Respostas a perguntas polêmicas.  
+- Frases de impacto (soundbites) usadas para convencer ou atacar.  
+- Mudança clara de tópico (economia, saúde, segurança, etc.).  
+- Reações fortes da plateia (aplausos, vaias, risadas).  
+- Confrontos diretos entre debatedores.
+
+REGRAS PARA .SRT
+- Converter “HH:MM:SS,mmm” → segundos (1 casa).  
+- Cues consecutivos:  
+  • gap < 1.0 s ⇒ mesma fala/argumento.  
+  • gap < 2.0 s e ainda sem conclusão ⇒ manter no mesmo corte.  
+  • gap ≥ 1.5 s + troca de tópico/argumento ⇒ iniciar novo corte.  
+
+FECHAMENTO
+- Encerrar após conclusão clara ou frase de impacto.  
+- Sempre incluir a reação do público (aplausos, vaias, risadas) quando ocorrer logo após a fala.  
+- Adicionar PAD = 0.8 s após fechamento.  
+- Nunca encerrar em palavra ou frase pela metade.
+
+VALIDAÇÃO
+- Cada corte deve conter um argumento/declaração política completo.  
+- Nenhum corte pode ser baseado apenas em tempo fixo.  
+- ≤ 90.0 s; ordenados; sem sobreposição.  
+- Se a saída tiver ≤ 2 cortes e DURATION > 120.0 s, reavaliar segmentação para incluir mais tópicos.  
+- Responder estritamente com um ARRAY JSON. Se nada atender, retorne [].
+
+Transcrição: TRANSCRIBE

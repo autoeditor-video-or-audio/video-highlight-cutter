@@ -1,0 +1,54 @@
+Exemplo de resposta:
+[
+  {"start": 12.3, "end": 47.8},
+  {"start": 79.1, "end": 102.0}
+]
+
+SAÍDA (OBRIGATÓRIA)
+- Responda SOMENTE com um ARRAY JSON (comece com [ e termine com ]).
+- É PROIBIDO responder com objeto JSON (ex.: {} ou {"cortes":[...]}). Se precisar retornar algo, responda apenas o ARRAY.
+- "start" e "end" em segundos decimais (máx. 1 casa), ordenados por "start", sem sobreposição.
+- Se não houver cortes válidos: [].
+
+OBJETIVO (GAMEPLAY)
+- Produzir cortes ≤ 90.0 s que capturem MOMENTOS FORTES de gameplay.
+- Cada corte deve ser um bloco completo com início → desenvolvimento → fechamento claro (acontecimento ou reação).
+- Nunca cortar em tempo fixo; somente em momentos significativos do jogo ou reação do jogador.
+
+REGRAS DURAS
+R1. Um momento marcante de gameplay = um corte.
+R2. Nunca encerrar em palavra/frase incompleta ou ação em andamento. Fechar após conclusão do evento (kill, morte, objetivo concluído, vitória, derrota, reação clara).
+R3. Adicionar PAD = 0.8 s após o fechamento para incluir reação.
+R4. Máx. 90.0 s por corte. Se o evento for maior, selecione subtrechos coesos (início do lance até clímax ou payoff).
+R5. É proibido criar cortes de duração regular (ex.: blocos de 30–45s). Cada corte deve existir por causa de um evento/contexto real.
+R6. Não cortar se a próxima fala/ação começar em menos de 0.5 s. Nesse caso, estenda ou combine no mesmo bloco.
+
+GATILHOS DE GAMEPLAY (MOMENTOS QUE DEVEM VIRAR CORTE)
+- Jogadas de destaque: kills múltiplos, jogada difícil, vitória clutch.
+- Reações fortes do jogador (gritos, risadas, susto, surpresa, rage).
+- Situações de tensão (ficar quase sem vida, confronto decisivo).
+- Mudança de fase/objetivo (boss fight, round vencido, partida iniciada/finalizada).
+- Erros engraçados ou momentos inusitados (morrer de forma boba, bug inesperado).
+- Interações com colegas de equipe ou chat que tenham humor ou impacto.
+- Viradas importantes na partida.
+
+REGRAS PARA .SRT
+- Converter “HH:MM:SS,mmm” → segundos (1 casa).
+- Cues consecutivos:
+  • gap < 1.0 s ⇒ mesma frase/ação.  
+  • gap < 2.0 s e ainda sem fechamento ⇒ manter no mesmo corte.  
+  • gap ≥ 1.5 s + novo evento ou reação ⇒ iniciar novo corte.
+
+FECHAMENTO
+- Encerrar no clímax ou payoff do evento (kill, vitória, reação, piada concluída).
+- Sempre incluir a reação imediata (risada, grito, aplauso, comemoração).
+- Adicionar PAD = 0.8 s após fechamento.
+- Nunca encerrar em ação ou frase pela metade.
+
+VALIDAÇÃO
+- Cada corte deve conter um acontecimento ou reação completa.
+- Nenhum corte deve ser baseado só em tempo fixo.
+- ≤ 90.0 s; ordenados; sem sobreposição.
+- Se a saída tiver ≤ 2 cortes e DURATION > 120.0 s, reavaliar segmentação: dividir por eventos reais até cobrir todos os momentos significativos.
+
+Transcrição: TRANSCRIBE

@@ -1,63 +1,77 @@
-Exemplo de resposta esperada:
+Exemplo de resposta:
 [
-  {"start": 123, "end": 137},
-  {"start": 141, "end": 157.4}
+  {"start": 12.3, "end": 47.8},
+  {"start": 79.1, "end": 102.0}
 ]
 
-INSTRUÇÕES:
-Primeiro, identifique mentalmente qual o tipo de conteúdo com base na transcrição. Exemplos comuns:
-   - Gameplay
-   - Podcast
-   - Entrevista
-   - Stand-up Comedy
-   - Vlog
-   - Aula/Tutoria
-   - Debate
-   - Palestra/Motivacional
-   - Reação/React
-   - Review de Produto
-   - Conteúdo Esportivo
-   - Notícias/Comentário Atual
-   - Música/Performance
-   - História Contada
-   - Conteúdo Motivacional/Coach
-   (O conteúdo pode ter mais de um tipo, mas escolha o que melhor representa o contexto principal.)
+SAÍDA (OBRIGATÓRIA)
+- Responda SOMENTE com um ARRAY JSON (comece com [ e termine com ]).
+- Não inclua chaves de nível superior (ex.: NÃO use {"cortes":[...]}).
+- "start" e "end" em segundos decimais (máx. 1 casa), ordenados por "start", sem sobreposição.
+- Se não houver cortes válidos: [].
 
-Depois de identificar o tipo de conteúdo, selecione TODOS os trechos NATURAIS e COMPLETOS que possam ser assistidos separadamente, sempre com início, meio e fim, transmitindo:
-   - Uma ideia ou micro-história completa.
-   - Qualquer emoção clara e perceptível: humor, medo, suspense, tensão, empolgação, raiva, surpresa, inspiração, tristeza, emoção profunda.
-   - Uma mudança notável de tom de voz, ritmo ou intensidade.
-   - Uma reação visual ou verbal que se destaque.
-   - Uma conclusão marcante ou frase de impacto.
+ETAPA 1 — REGRAS DURAS (V2)
+- Cada corte deve ter ≤ 90.0 s.
+- Cada corte cobre UM contexto/tópico completo com início (setup) → desenvolvimento → fechamento (punchline, conclusão ou reação).
+- Um contexto/tópico = um corte. Não misture assuntos diferentes no mesmo corte.
+- Nunca encerrar em palavra/frase incompleta. Encerrar após ponto final, interrogação, exclamação OU risada/aplauso claro.
+- Adicionar PAD = 0.8 s após o fechamento se houver folga.
+- Crowd work (pergunta↔resposta) deve ficar no mesmo corte, incluindo a reação do público.
+- Início: remover fillers inúteis (“ah”, “é…”, “tipo”, “né”) se não forem parte do humor.
+- Anti-padrão: é proibido retornar cortes que sejam apenas divisões regulares por tempo (ex.: blocos de 30s, 45s, 60s).  
+- Cada corte só é válido se houver **um início → desenvolvimento → fechamento natural** perceptível.
 
-IMPORTANTE: Não limite a quantidade de cortes — capture TODOS os momentos que se encaixarem nos critérios, mesmo que sejam muitos, desde que cada corte tenha sentido isolado.
+COBERTURA
+- Analise TODA a transcrição (DURAÇÃO = DURATION segundos).
+- Gere UM CORTE para CADA tópico detectado.
+- SUBDIVIDA tópicos longos apenas quando houver múltiplas punchlines/revelações independentes, desde que cada sub-bloco seja coeso (setup → payoff).
+- Nunca dividir por tempo fixo. Se não houver mudança de tópico ou punchline, mantenha no mesmo corte, mesmo que o bloco seja longo (até 90.0 s).
 
-Exemplos de momentos de alto impacto emocional ou de engajamento:
-   - Risadas e piadas completas.
-   - Situações de suspense ou tensão crescente.
-   - Reações de medo ou susto.
-   - Momentos de surpresa ou revelação.
-   - Frases inspiradoras ou emocionantes.
-   - Discussões acaloradas ou pontos de virada.
-   - Qualquer momento que gere curiosidade ou mantenha o público preso.
+SEGMENTAÇÃO
+- Iniciar NOVO CORTE quando houver pelo menos um dos seguintes:
+  a) Marcadores de pivô discursivo (“agora…”, “vamos…”, “mudando…”, “outra coisa…”).  
+  b) Troca de atividade/pessoa/plateia (ex.: conversar → jogar; chamar amigo; responder chat).  
+  c) Tópicos semânticos distintos (ex.: “banho/higiene” vs “Discord/COD” vs “microfone/cantar”).  
+  d) Fechamento por punchline + risada/aplauso; se o mesmo tema continuar com NOVA punchline independente, gere outro corte.  
+  e) Pausa no SRT ≥ 1.5 s combinada com (a–d).  
 
-REGRAS DE CORTE:
-- Não há limite máximo de duração para o corte. Capture o tempo necessário para manter o contexto.
-- Aceite cortes curtos, médios ou longos, desde que tenham sentido isolado.
-- É permitido fazer cortes consecutivos, desde que não sejam sobrepostos e cada um tenha valor próprio.
-- Aceite cortes de qualquer pessoa no áudio, desde que o corte faça sentido isoladamente, tenha emoção, contexto ou potencial de engajamento.
-- Evite cortes irrelevantes ao tipo de conteúdo identificado (ex.: em gameplay, apenas barulho do jogo sem reação; em podcast, longos silêncios).
-- TODOS os cortes devem fazer sentido isoladamente, mesmo se forem parte de algo maior.
+REGRAS PARA .SRT
+- Converter “HH:MM:SS,mmm” → segundos (1 casa).  
+- Cues consecutivos do MESMO tópico:  
+  • gap < 1.0 s ⇒ mesma frase.  
+  • 1.0 s ≤ gap < 2.0 s e ainda sem fechamento ⇒ manter no mesmo corte.  
+  • gap ≥ 1.5 s + pivô de assunto OU nova punchline ⇒ iniciar novo corte.  
+- Considerar onomatopeias/sinais de riso/aplausos (“haha”, “kkkk”, “rs”, “(risos)”, “aplausos”) como fechamento suave.
 
-FORMATAÇÃO DA RESPOSTA:
-- Não escreva nenhum texto, comentário, explicação, análise ou resumo fora do JSON!
-- A resposta deve começar IMEDIATAMENTE com [ e terminar com ].
-- Se não houver cortes, retorne apenas [].
-- Use segundos nos campos "start" e "end" no formato decimal, com no máximo 1 casa decimal.
+FECHAMENTO
+- Encerrar após . ? ! OU risada/aplauso claro.  
+- Adicionar PAD = 0.8 s após punchline/fechamento se houver folga.  
+- Nunca encerrar em palavra/frase incompleta.  
+- Não encerrar um corte se a próxima fala começar em menos de 0.5 s. Nesse caso, estenda ou combine no mesmo bloco.
 
-DICAS:
-- Sempre que possível, prefira cortes com forte carga emocional ou de interesse.
-- Capture todos os momentos relevantes, não apenas os melhores.
-- Adapte a escolha dos cortes ao tipo de conteúdo identificado.
+VALIDAÇÃO V2
+- Cada corte tem começo→payoff e pertence a um único tópico.  
+- Nenhuma frase/palavra cortada no final.  
+- ≤ 90.0 s; ordenado; sem sobreposição.  
+- É inválido devolver cortes de duração regular (ex.: blocos quase iguais de 30–45s). Cada corte deve ser motivado pelo conteúdo.
+
+VALIDAÇÃO QUANTITATIVA
+- Se a saída tiver ≤ 2 cortes e DURATION > 120.0 s, reavaliar segmentação:  
+  • Dividir tópicos longos em sub-blocos coesos (múltiplas punchlines) respeitando ≤ 90.0 s.  
+  • Reaplicar SEGMENTAÇÃO até cobrir todos os cortes válidos.
+
+ETAPA 2 — FALLBACK DE EMOÇÃO/ENGAJAMENTO (V1)
+- Após extrair tudo que atende V2, procurar momentos adicionais de alto impacto que funcionem isoladamente:  
+  • Piadas completas ou histórias engraçadas.  
+  • Reações de medo, suspense, surpresa, revelação.  
+  • Frases inspiradoras ou emocionantes.  
+  • Discussões acaloradas, viradas marcantes, frases de impacto.  
+  • Mudança notável de ritmo/voz ou reação forte da plateia.  
+- Adicionar esses cortes extras mantendo ≤ 90.0 s quando possível e as regras de fechamento (sem frase cortada, PAD 0.8 s, espaçamento mínimo 0.5 s entre cortes).  
+- Evitar cortes irrelevantes (silêncio, barulho sem contexto).
+
+VALIDAÇÃO FINAL
+- Retornar os cortes V2 e, em seguida, os cortes adicionais do fallback V1 (se houver), em uma ÚNICA lista JSON.  
+- Responder estritamente com um ARRAY JSON. Se nada atender, retorne [].
 
 Transcrição: TRANSCRIBE

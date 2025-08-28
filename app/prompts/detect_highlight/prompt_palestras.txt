@@ -1,0 +1,54 @@
+Exemplo de resposta:
+[
+  {"start": 12.3, "end": 47.8},
+  {"start": 79.1, "end": 102.0}
+]
+
+SAÍDA (OBRIGATÓRIA)
+- Responda SOMENTE com um ARRAY JSON (comece com [ e termine com ]).
+- É PROIBIDO responder com objeto JSON (ex.: {} ou {"cortes":[...]}). Se precisar retornar algo, responda apenas o ARRAY.
+- "start" e "end" em segundos decimais (máx. 1 casa), ordenados por "start", sem sobreposição.
+- Se não houver cortes válidos: [].
+
+OBJETIVO (PALESTRAS)
+- Produzir cortes ≤ 90.0 s que capturem uma IDEIA COMPLETA do palestrante.
+- Cada corte deve conter início → desenvolvimento → conclusão (ou frase de impacto).
+- Nunca dividir por tempo fixo; só por mudança de conteúdo ou conclusão natural.
+
+REGRAS DURAS
+R1. Um tópico/ideia = um corte.
+R2. Nunca encerrar em frase incompleta. Encerrar após ponto final, interrogação, exclamação OU conclusão clara.
+R3. Adicionar PAD = 0.8 s após fechamento para incluir pausa ou reação da plateia.
+R4. Máx. 90.0 s por corte. Se um tópico exceder isso, selecione subtrecho coeso (introdução → conclusão) que caiba no limite.
+R5. É proibido criar cortes de duração regular (ex.: blocos de 30s ou 45s). Cada corte deve existir por causa do conteúdo.
+R6. Não encerrar se a próxima fala começar em menos de 0.5 s; estenda ou combine no mesmo bloco.
+
+GATILHOS DE PALESTRA (MOMENTOS QUE DEVEM VIRAR CORTE)
+- Mudança de tópico ou seção clara.
+- Explicação curta que fecha com conclusão ou lição.
+- Frase de impacto ou citação inspiradora.
+- Pergunta ou interação da plateia com resposta completa.
+- História ou exemplo usado para ilustrar um ponto.
+- Conclusão parcial que gera transição para próximo assunto.
+
+REGRAS PARA .SRT
+- Converter “HH:MM:SS,mmm” → segundos (1 casa).
+- Cues consecutivos:
+  • gap < 1.0 s ⇒ mesma frase/ideia.  
+  • gap < 2.0 s e ainda sem conclusão ⇒ manter no mesmo corte.  
+  • gap ≥ 1.5 s + mudança de tópico/conclusão ⇒ iniciar novo corte.
+
+FECHAMENTO
+- Encerrar após conclusão clara, frase de impacto, ou resposta finalizada.
+- Sempre incluir reação/pausa da plateia quando houver.
+- Adicionar PAD = 0.8 s após fechamento.
+- Nunca encerrar em frase ou palavra pela metade.
+
+VALIDAÇÃO
+- Cada corte deve conter uma ideia/tópico completo.
+- Nenhum corte pode ser baseado apenas em tempo fixo.
+- ≤ 90.0 s; ordenados; sem sobreposição.
+- Se a saída tiver ≤ 2 cortes e DURATION > 120.0 s, reavaliar segmentação para incluir mais tópicos/ideias.
+- Responder estritamente com um ARRAY JSON. Se nada atender, retorne [].
+
+Transcrição: TRANSCRIBE

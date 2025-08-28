@@ -1,0 +1,71 @@
+Exemplo de resposta:
+[
+  {"start": 12.3, "end": 47.8},
+  {"start": 79.1, "end": 102.0}
+]
+
+SAÍDA (OBRIGATÓRIA)
+- Responda SOMENTE com um ARRAY JSON (comece com [ e termine com ]).
+- É PROIBIDO responder com objeto JSON (ex.: {} ou {"cortes":[...]}). Se precisar retornar algo, responda apenas o ARRAY.
+- "start" e "end" em segundos decimais (máx. 1 casa), ordenados por "start", sem sobreposição.
+- Se não houver cortes válidos: [].
+
+OBJETIVO (REACT)
+- Gerar cortes ≤ 90.0 s que capturem uma UNIDADE DE CONTEÚDO completa de React:
+  início (problema/explicação) → desenvolvimento (edição de código) → fechamento (resultado: build ok/hot reload/teste passando/UI funcionando).
+- Nunca dividir por tempo fixo; cortes devem existir por causa de conteúdo real concluído.
+
+REGRAS DURAS
+R1. Um tópico/ação concluída = um corte. Exemplos:
+    • Criar componente/Hook e mostrar na tela.
+    • Implementar estado/props e provar com interação.
+    • Chamada a API (fetch/axios) e exibir dados com loading/erro resolvido.
+    • Corrigir bug (erro vermelho/console) e mostrar a página funcionando.
+    • Refatorar (extrair componente, custom Hook) e validar o comportamento.
+    • Ajuste de UI (layout/estilo) e demonstrar resultado.
+R2. Nunca encerrar em frase/código incompleto (linha quebrada, JSX aberto, ideia não concluída).
+    Encerrar após: conclusão verbal clara OU resultado visível (hot reload ok, erro some, teste passa, UI renderiza) OU mudança clara de tópico.
+R3. Adicionar PAD = 0.8 s após o fechamento para incluir reação/resultado final.
+R4. Máximo 90.0 s por corte. Se o tópico exceder, selecione subtrecho coeso (problema→mudança→resultado) dentro do limite.
+R5. Proibido cortes de duração regular (30/45/60s) ou janelas fixas.
+R6. Não encerrar se a próxima fala/ação começar em < 0.5 s; estenda ou combine no mesmo bloco.
+
+SINAIS/LEITURAS DE REACT (para detectar blocos)
+- Palavras-chave: import, export, return (, <div>, <Button>, props, state, useState, useEffect, useMemo, useCallback, context, reducer, map(, key=, onClick, setState, setX, children, component, hook, custom hook.
+- Ferramentas: Vite, CRA, Next.js (pages/app router), Remix, ESLint, Prettier, Tailwind, shadcn/ui.
+- Eventos/resultados: “compilação concluída”, “hot reload”, “build”, “teste passou”, “erro resolvido”, “a página atualizou”, “overlay de erro sumiu”.
+
+GATILHOS QUE DEVEM VIRAR CORTE
+- Demonstração de antes→depois (bug/erro → corrigido).
+- Implementação de funcionalidade (clique/estado/props) + prova visual.
+- Chamada a API do zero ao dado renderizado (ou ao tratamento de erro).
+- Refatoração com validação (comportamento preservado/melhorado).
+- Dica/atalho com payoff imediato (produtividade, acessibilidade, performance).
+- Frase/conceito de impacto (ex.: por que usar useMemo aqui) com exemplo curto.
+
+REGRAS PARA .SRT
+- Converter “HH:MM:SS,mmm” → segundos (1 casa).
+- Cues consecutivos do MESMO tópico:
+  • gap < 1.0 s ⇒ mesma frase/explicação/linha de código.
+  • 1.0 s ≤ gap < 2.0 s e sem fechamento ⇒ manter no mesmo corte.
+  • gap ≥ 1.5 s + novo tópico/resultado visível ⇒ iniciar novo corte.
+- Considerar logs/overlays/“erro/ok” como fechamento suave quando marcam conclusão.
+
+HIGIENE DE INÍCIO/FIM
+- Início: pular fillers (“ah”, “é…”, “tipo”, “né”, “então”) e começar na primeira frase útil do tópico (problema/objetivo).
+- Fim: incluir brevemente a confirmação do resultado (hot reload, UI atualizada, “teste passou”) quando ocorrer logo após a conclusão.
+- Nunca encerrar com JSX incompleto, frase pendente, reticências “…” ou conjunção (“mas…”, “então…”, “porque…”).
+
+ANTI-PADRÕES (REJEITAR/RECALCULAR)
+- Cortes com durações quase iguais por 3+ sequências.
+- Cortar no meio de raciocínio/código/erro sendo lido.
+- Devolver 1–2 cortes cobrindo [0, 90] quando houver vários tópicos/pagamentos (payoffs).
+
+VALIDAÇÃO
+- Cada corte tem começo→mudança→resultado (coeso e isolado).
+- Nenhuma fala/linha de código interrompida; aplicar PAD 0.8 s; respeitar espaçamento mínimo de 0.5 s para não grudar na próxima fala/ação.
+- ≤ 90.0 s; ordenado; sem sobreposição.
+- Se DURATION > 120.0 s e a saída tiver ≤ 2 cortes, reavaliar segmentação e subdividir por tópicos/resultados.
+- Responder estritamente com um ARRAY JSON; se nada atender, retorne [].
+
+Transcrição: TRANSCRIBE
