@@ -201,6 +201,23 @@ O comportamento da IA pode ser ajustado pelo arquivo `.env`.
 Esses parâmetros controlam como o modelo gera as respostas, permitindo mais **precisão** ou mais **criatividade**, conforme a necessidade.
 
 ```ini
+# ------------------------------
+# Toggle do motor de IA
+# ------------------------------
+# false → usa Ollama local (padrão)
+# true  → usa API da OpenAI
+USE_CHATGPT=false
+
+# ------------------------------
+# Configuração OpenAI (se USE_CHATGPT=true)
+# ------------------------------
+OPENAI_API_KEY=sk-xxxxxx
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_TIMEOUT=120
+
+# ------------------------------
+# Configuração Ollama (se USE_CHATGPT=false)
+# ------------------------------
 # TEMPERATURE → controla a aleatoriedade da resposta.
 # Baixo (0.1–0.3) = determinístico, mais preciso.
 # Alto (0.7–1.0) = criativo, mais variado.
@@ -223,12 +240,12 @@ OLLAMA_REPEAT_PENALTY=1.2
 # NUM_CTX → tamanho do contexto (quantos tokens o modelo "lê").
 # Maior = suporta transcrições mais longas, mas exige mais memória.
 # 8192 tokens ≈ 6.000 palavras.
-OLLAMA_NUM_CTX=8192
+OLLAMA_NUM_CTX=16384
 
 # NUM_PREDICT → número máximo de tokens que o modelo pode gerar.
 # Ex.: 256 ≈ 200 palavras.
 # Útil para limitar saídas longas (ex.: só JSON).
-OLLAMA_NUM_PREDICT=256
+OLLAMA_NUM_PREDICT=1024
 ```
 
 > 🔧 **Dica prática:**  
