@@ -3,7 +3,7 @@
 app: video-highlight-cutter
 component: highlight
 core: autoeditor-video-or-audio
-version: 1.0.6
+version: 1.0.7
 
 ##############################
 # Definition of the Deployment
