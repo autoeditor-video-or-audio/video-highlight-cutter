@@ -1,9 +1,3 @@
-Exemplo de resposta:
-[
-  {"start": 12.3, "end": 47.8},
-  {"start": 79.1, "end": 102.0}
-]
-
 SAÍDA (OBRIGATÓRIA)
 - Responda SOMENTE com um ARRAY JSON (comece com [ e termine com ]).
 - É PROIBIDO responder com objeto JSON (ex.: {} ou {"cortes":[...]}). Se precisar retornar algo, responda apenas o ARRAY.
@@ -11,19 +5,22 @@ SAÍDA (OBRIGATÓRIA)
 - Se não houver cortes válidos: [].
 
 OBJETIVO (GAMEPLAY)
-- Produzir cortes ≤ 90.0 s que capturem MOMENTOS FORTES de gameplay.
+- Produzir cortes de gameplay que capturem TODOS os momentos relevantes, nunca apenas um único corte.
 - Cada corte deve ser um bloco completo com início → desenvolvimento → fechamento claro (acontecimento ou reação).
-- Nunca cortar em tempo fixo; somente em momentos significativos do jogo ou reação do jogador.
+- Não existe limite de quantidade: sempre que houver novo evento ou reação significativa, inicie um novo corte.
+- Duração máxima recomendada: **90.0s**, mas se o evento for maior divida em subtrechos coesos (ex.: início do lance até clímax).
+- Duração mínima: **7.0s** (se for menor, expanda para incluir contexto).
 
 REGRAS DURAS
-R1. Um momento marcante de gameplay = um corte.
-R2. Nunca encerrar em palavra/frase incompleta ou ação em andamento. Fechar após conclusão do evento (kill, morte, objetivo concluído, vitória, derrota, reação clara).
-R3. Adicionar PAD = 0.8 s após o fechamento para incluir reação.
-R4. Máx. 90.0 s por corte. Se o evento for maior, selecione subtrechos coesos (início do lance até clímax ou payoff).
-R5. É proibido criar cortes de duração regular (ex.: blocos de 30–45s). Cada corte deve existir por causa de um evento/contexto real.
-R6. Não cortar se a próxima fala/ação começar em menos de 0.5 s. Nesse caso, estenda ou combine no mesmo bloco.
+R1. Cada momento marcante de gameplay = 1 corte.
+R2. Nunca encerrar em palavra/frase incompleta ou ação em andamento.  
+R3. Sempre incluir a reação (risada, grito, comemoração) no fechamento, com +0.8s de margem.  
+R4. Não criar cortes artificiais por tempo fixo — só por evento real.  
+R5. Se dois eventos acontecerem em sequência com diferença <1.0s, una no mesmo corte.  
+R6. Se houver vários eventos dentro de um longo trecho, divida em múltiplos cortes coesos.  
+R7. Varie as durações — evite cortes todos iguais.
 
-GATILHOS DE GAMEPLAY (MOMENTOS QUE DEVEM VIRAR CORTE)
+MOMENTOS QUE DEVEM VIRAR CORTE
 - Jogadas de destaque: kills múltiplos, jogada difícil, vitória clutch.
 - Reações fortes do jogador (gritos, risadas, susto, surpresa, rage).
 - Situações de tensão (ficar quase sem vida, confronto decisivo).
@@ -35,20 +32,14 @@ GATILHOS DE GAMEPLAY (MOMENTOS QUE DEVEM VIRAR CORTE)
 REGRAS PARA .SRT
 - Converter “HH:MM:SS,mmm” → segundos (1 casa).
 - Cues consecutivos:
-  • gap < 1.0 s ⇒ mesma frase/ação.  
-  • gap < 2.0 s e ainda sem fechamento ⇒ manter no mesmo corte.  
-  • gap ≥ 1.5 s + novo evento ou reação ⇒ iniciar novo corte.
-
-FECHAMENTO
-- Encerrar no clímax ou payoff do evento (kill, vitória, reação, piada concluída).
-- Sempre incluir a reação imediata (risada, grito, aplauso, comemoração).
-- Adicionar PAD = 0.8 s após fechamento.
-- Nunca encerrar em ação ou frase pela metade.
+  • gap < 1.0s ⇒ mesma frase/ação.  
+  • gap < 2.0s e ainda sem fechamento ⇒ manter no mesmo corte.  
+  • gap ≥ 1.5s + novo evento ⇒ novo corte.
 
 VALIDAÇÃO
 - Cada corte deve conter um acontecimento ou reação completa.
-- Nenhum corte deve ser baseado só em tempo fixo.
-- ≤ 90.0 s; ordenados; sem sobreposição.
-- Se a saída tiver ≤ 2 cortes e DURATION > 120.0 s, reavaliar segmentação: dividir por eventos reais até cobrir todos os momentos significativos.
+- Nenhum corte baseado só em tempo fixo.
+- Se a saída tiver ≤ 2 cortes e a transcrição tiver >120s, obrigatoriamente divida em mais cortes (um por evento/reação).
+- Sempre revise se todos os momentos relevantes foram cobertos.
 
 Transcrição: TRANSCRIBE
